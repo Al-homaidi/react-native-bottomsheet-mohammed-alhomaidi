@@ -1,7 +1,7 @@
 {
-  "name": "react-n-com-ui-mohammed-alhomaidi",
+  "name": "react-native-bottomsheet-mohammed-alhomaidi",
   "version": "1.0.0",
-  "description": "Advanced React Native UI Components Library with Modern Design, Smooth Animations & Gesture Support",
+  "description": "Advanced React Native BottomSheet Component with Context-based API, Modern Design, Smooth Animations & Gesture Support",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [
@@ -11,8 +11,6 @@
   ],
   "keywords": [
     "react-native",
-    "ui-components",
-    "components",
     "bottom-sheet",
     "bottomsheet",
     "gesture",
@@ -20,36 +18,53 @@
     "typescript",
     "reanimated",
     "gesture-handler",
-    "ui-library",
-    "mobile-ui"
+    "ui-component",
+    "mobile-ui",
+    "modal",
+    "drawer",
+    "sheet",
+    "context",
+    "provider"
   ],
-  "author": "Mohammed Mahfouz Al-humaidi",
+  "author": {
+    "name": "Mohammed Mahfouz Al-homaidi",
+    "email": "alhomaidi505@gmail.com",
+    "url": "https://github.com/Al-homaidi"
+  },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/alhomaidi/react-n-com-ui-mohammed-alhomaidi.git"
+    "url": "https://github.com/Al-homaidi/bottomsheet-mohammed-al-homaidi.git"
   },
   "bugs": {
-    "url": "https://github.com/alhomaidi/react-n-com-ui-mohammed-alhomaidi/issues"
+    "url": "https://github.com/Al-homaidi/bottomsheet-mohammed-al-homaidi/issues"
   },
-  "homepage": "https://github.com/alhomaidi/react-n-com-ui-mohammed-alhomaidi#readme",
+  "homepage": "https://github.com/Al-homaidi/bottomsheet-mohammed-al-homaidi#readme",
   "scripts": {
     "build": "tsc",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "test": "echo \"No tests specified\" && exit 0",
+    "lint": "echo \"No linting specified\" && exit 0",
+    "clean": "rm -rf lib",
+    "prebuild": "npm run clean"
   },
   "peerDependencies": {
-    "react": "*",
-    "react-native": "*",
+    "react": ">=16.8.0",
+    "react-native": ">=0.60.0",
     "react-native-gesture-handler": "^2.0.0",
     "react-native-reanimated": "^3.0.0",
     "react-native-safe-area-context": "^4.0.0 || ^5.0.0"
   },
   "devDependencies": {
-    "@types/react": "^19.1.9",
-    "@types/react-native": "^0.72.8",
-    "typescript": "^5.3.3"
+    "@types/react": "^18.2.0",
+    "@types/react-native": "^0.72.0",
+    "typescript": "^5.0.0"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
