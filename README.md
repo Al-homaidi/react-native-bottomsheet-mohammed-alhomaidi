@@ -74,6 +74,7 @@ function App() {
 }
 ```
 
+
 **Without this wrapper, gestures will not work!**
 
 ## 🎯 Quick Start
