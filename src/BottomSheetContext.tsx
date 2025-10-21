@@ -59,8 +59,8 @@ export const BottomSheetProvider = ({ children }: { children: ReactNode }) => {
         if (expandId) {
             if (refs.current[expandId]?.current) {
                 refs.current[expandId].current.expand();
-                setSheets(prev =>
-                    prev.map(sheet =>
+                setSheets((prev: BottomSheetItemType[]) =>
+                    prev.map((sheet: BottomSheetItemType) =>
                         sheet.id === expandId ? { ...sheet, expandToFull: true } : sheet
                     )
                 );
@@ -86,7 +86,7 @@ export const BottomSheetProvider = ({ children }: { children: ReactNode }) => {
             ...sheetProps,
         };
 
-        setSheets((prev) => [...prev, newSheet]);
+        setSheets((prev: BottomSheetItemType[]) => [...prev, newSheet]);
         sheetsRef.current = [...sheetsRef.current, newSheet];
 
         if (expandFull) {
@@ -104,8 +104,8 @@ export const BottomSheetProvider = ({ children }: { children: ReactNode }) => {
 
         refs.current[closeId]?.current?.close();
         setTimeout(() => {
-            setSheets((prev) => prev.filter((s) => s.id !== closeId));
-            sheetsRef.current = sheetsRef.current.filter((s) => s.id !== closeId);
+            setSheets((prev: BottomSheetItemType[]) => prev.filter((s: BottomSheetItemType) => s.id !== closeId));
+            sheetsRef.current = sheetsRef.current.filter((s: BottomSheetItemType) => s.id !== closeId);
             delete refs.current[closeId];
         }, 300);
     };
@@ -119,13 +119,13 @@ export const BottomSheetProvider = ({ children }: { children: ReactNode }) => {
             return;
         }
 
-        setSheets(prev =>
-            prev.map(sheet =>
+        setSheets((prev: BottomSheetItemType[]) =>
+            prev.map((sheet: BottomSheetItemType) =>
                 sheet.id === targetId ? { ...sheet, expandToFull: true } : sheet
             )
         );
 
-        sheetsRef.current = sheetsRef.current.map(sheet =>
+        sheetsRef.current = sheetsRef.current.map((sheet: BottomSheetItemType) =>
             sheet.id === targetId ? { ...sheet, expandToFull: true } : sheet
         );
 
@@ -141,10 +141,10 @@ export const BottomSheetProvider = ({ children }: { children: ReactNode }) => {
     return (
         <BottomSheetContext.Provider value={{ show, close, expandToFull }}>
             {children}
-            {sheets.map((sheet, index) => (
+            {sheets.map((sheet: BottomSheetItemType, index: number) => (
                 <BottomSheet
                     key={sheet.id}
-                    ref={refs.current[sheet.id]}
+                    ref={refs.current[sheet.id] as React.RefObject<BottomSheetMethods>}
                     snapTo={sheet.snapTo || '40%'}
                     snapToExpanded={sheet.snapToExpanded}
                     expandToFull={sheet.expandToFull ?? false}

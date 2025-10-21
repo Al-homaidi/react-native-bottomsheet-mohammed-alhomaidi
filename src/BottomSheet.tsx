@@ -41,7 +41,7 @@ export interface BottomSheetMethods {
 }
 
 const BottomSheetScrollView = forwardRef<BottomSheetMethods, Props>(
-  ({ snapTo, containerClassName, lineContainerClassName, lineClassName, snapToExpanded, expandToFull, DropbackgroundColor, backgroundColor, zIndex, content, containerStyle, lineStyle, lineContainerStyle }: Props, ref) => {
+  ({ snapTo, containerClassName, lineContainerClassName, lineClassName, snapToExpanded, expandToFull, DropbackgroundColor, backgroundColor, zIndex, content, containerStyle, lineStyle, lineContainerStyle }: Props, ref: React.Ref<BottomSheetMethods>) => {
     const inset = useSafeAreaInsets();
     const { height } = Dimensions.get('screen');
     const percentage = parseFloat(snapTo.replace('%', '')) / 100;
@@ -146,7 +146,6 @@ const BottomSheetScrollView = forwardRef<BottomSheetMethods, Props>(
           close={close}
         />
         <Animated.View
-          className={containerClassName}
           style={[
             styles.container,
             animationStyle,
@@ -156,11 +155,10 @@ const BottomSheetScrollView = forwardRef<BottomSheetMethods, Props>(
         >
           <GestureDetector gesture={pan}>
             <View
-              className={lineContainerClassName}
               style={[styles.linecontainer, lineContainerStyle]}
               collapsable={false}
             >
-              <View className={lineClassName} style={[styles.line, lineStyle]} />
+              <View style={[styles.line, lineStyle]} />
             </View>
           </GestureDetector>
 
