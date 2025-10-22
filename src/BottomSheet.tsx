@@ -156,7 +156,7 @@ const BottomSheetScrollView = forwardRef<BottomSheetMethods, BottomSheetProps>(
         });
         opacity.value = 1;
       }
-    }, [expandToFull, snapToExpanded, expandedHeight, topAnimation, opacity, defaultExpandConfig]);
+    }, [expandToFull, snapToExpanded, expandedHeight, topAnimation, opacity]);
 
     return (
       <>

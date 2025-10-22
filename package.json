@@ -1,6 +1,6 @@
 {
   "name": "react-native-bottomsheet-mohammed-alhomaidi",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Advanced React Native BottomSheet Component with Context-based API, Modern Design, Smooth Animations & Gesture Support",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
