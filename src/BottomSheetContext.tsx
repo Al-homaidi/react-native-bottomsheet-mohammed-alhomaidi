@@ -1,7 +1,5 @@
-import { StyleProp, ViewStyle } from 'react-native';
-import BottomSheet, {
-    BottomSheetMethods,
-} from './BottomSheet';
+import BottomSheet from './BottomSheet';
+import { AnimationConfig, BottomSheetMethods } from './BottomSheetTypes';
 import React, {
     createContext,
     ReactNode,
@@ -10,6 +8,7 @@ import React, {
     useRef,
     useState,
 } from 'react';
+import { StyleProp, ViewStyle } from 'react-native';
 export type BottomSheetItemType = {
     id: string;
     title?: string;
@@ -23,9 +22,17 @@ export type BottomSheetItemType = {
     containerStyle?: StyleProp<ViewStyle>;
     lineContainerStyle?: StyleProp<ViewStyle>;
     lineStyle?: StyleProp<ViewStyle>;
-    containerClassName?: string;
-    lineContainerClassName?: string;
-    lineClassName?: string;
+    enableDragToClose?: boolean;
+    enableDragToExpand?: boolean;
+    dragThreshold?: number;
+    showDragLine?: boolean;
+    enableBackdropClose?: boolean;
+    tapBackdropToClose?: boolean;
+    animationConfig?: {
+        expand?: AnimationConfig;
+        close?: AnimationConfig;
+        drag?: AnimationConfig;
+    };
 };
 
 interface BottomSheetContextType {
@@ -92,9 +99,9 @@ export const BottomSheetProvider = ({ children }: { children: ReactNode }) => {
         if (expandFull) {
             setExpandId(id);
         } else {
-            setTimeout(() => {
+            requestAnimationFrame(() => {
                 refs.current[id]?.current?.expand();
-            }, 50);
+            });
         }
     };
 
@@ -107,7 +114,7 @@ export const BottomSheetProvider = ({ children }: { children: ReactNode }) => {
             setSheets((prev: BottomSheetItemType[]) => prev.filter((s: BottomSheetItemType) => s.id !== closeId));
             sheetsRef.current = sheetsRef.current.filter((s: BottomSheetItemType) => s.id !== closeId);
             delete refs.current[closeId];
-        }, 300);
+        }, 200);
     };
 
     const expandToFull = (id?: string) => {
@@ -155,11 +162,16 @@ export const BottomSheetProvider = ({ children }: { children: ReactNode }) => {
                     containerStyle={sheet.containerStyle}
                     lineContainerStyle={sheet.lineContainerStyle}
                     lineStyle={sheet.lineStyle}
-                    containerClassName={sheet.containerClassName}
-                    lineContainerClassName={sheet.lineContainerClassName}
-                    lineClassName={sheet.lineClassName}
+                    enableDragToClose={sheet.enableDragToClose ?? true}
+                    enableDragToExpand={sheet.enableDragToExpand ?? true}
+                    dragThreshold={sheet.dragThreshold ?? 30}
+                    showDragLine={sheet.showDragLine ?? true}
+                    animationConfig={sheet.animationConfig}
+                    enableBackdropClose={sheet.enableBackdropClose}
+                    tapBackdropToClose={sheet.tapBackdropToClose}
                 />
             ))}
+
         </BottomSheetContext.Provider>
     );
 };

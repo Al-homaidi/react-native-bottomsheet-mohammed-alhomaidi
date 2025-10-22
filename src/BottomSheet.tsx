@@ -5,10 +5,9 @@ import React, {
   useEffect,
   useImperativeHandle
 } from 'react';
-import { Dimensions, Keyboard, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import { Dimensions, Keyboard, StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
-  AnimatedScrollViewProps,
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
@@ -17,31 +16,33 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import BackDrop from './BackDrop';
+import {
+  BottomSheetMethods,
+  BottomSheetProps,
+  DEFAULT_ANIMATION_CONFIG,
+  DEFAULT_BEHAVIOR_CONFIG
+} from './BottomSheetTypes';
 
-interface Props extends AnimatedScrollViewProps {
-  snapTo: string;
-  snapToExpanded?: string;
-  backgroundColor?: string;
-  DropbackgroundColor: string;
-  expandToFull?: boolean;
-  content?: React.ReactNode;
-  containerStyle?: StyleProp<ViewStyle>;
-  lineContainerStyle?: StyleProp<ViewStyle>;
-  lineStyle?: StyleProp<ViewStyle>;
-  containerClassName?: string;
-  lineContainerClassName?: string;
-  lineClassName?: string;
-  zIndex?: number;
-}
-
-
-export interface BottomSheetMethods {
-  expand: () => void;
-  close: () => void;
-}
-
-const BottomSheetScrollView = forwardRef<BottomSheetMethods, Props>(
-  ({ snapTo, containerClassName, lineContainerClassName, lineClassName, snapToExpanded, expandToFull, DropbackgroundColor, backgroundColor, zIndex, content, containerStyle, lineStyle, lineContainerStyle }: Props, ref: React.Ref<BottomSheetMethods>) => {
+const BottomSheetScrollView = forwardRef<BottomSheetMethods, BottomSheetProps>(
+  ({
+    snapTo,
+    snapToExpanded,
+    expandToFull,
+    DropbackgroundColor,
+    backgroundColor,
+    zIndex,
+    content,
+    containerStyle,
+    lineStyle,
+    lineContainerStyle,
+    animationConfig,
+    enableDragToClose = DEFAULT_BEHAVIOR_CONFIG.enableDragToClose,
+    enableDragToExpand = DEFAULT_BEHAVIOR_CONFIG.enableDragToExpand,
+    dragThreshold = DEFAULT_BEHAVIOR_CONFIG.dragThreshold,
+    enableBackdropClose = DEFAULT_BEHAVIOR_CONFIG.enableBackdropClose,
+    tapBackdropToClose = DEFAULT_BEHAVIOR_CONFIG.tapBackdropToClose,
+    showDragLine = DEFAULT_BEHAVIOR_CONFIG.showDragLine
+  }: BottomSheetProps, ref: React.Ref<BottomSheetMethods>) => {
     const inset = useSafeAreaInsets();
     const { height } = Dimensions.get('screen');
     const percentage = parseFloat(snapTo.replace('%', '')) / 100;
@@ -55,30 +56,47 @@ const BottomSheetScrollView = forwardRef<BottomSheetMethods, Props>(
     const opacity = useSharedValue(1);
     const context = useSharedValue(0);
 
-    const CLOSE_THRESHOLD_PIXELS = 30;
+    const CLOSE_THRESHOLD_PIXELS = dragThreshold;
+
+    const defaultExpandConfig = {
+      ...DEFAULT_ANIMATION_CONFIG.expand,
+      ...animationConfig?.expand
+    };
+
+    const defaultCloseConfig = {
+      ...DEFAULT_ANIMATION_CONFIG.close,
+      ...animationConfig?.close
+    };
+
+    const defaultDragConfig = {
+      ...DEFAULT_ANIMATION_CONFIG.drag,
+      ...animationConfig?.drag
+    };
 
     const expand = useCallback(() => {
       'worklet';
       opacity.value = 1;
       if (expandToFull && snapToExpanded) {
         topAnimation.value = withSpring(expandedHeight, {
-          damping: 300,
-          stiffness: 300,
+          damping: defaultExpandConfig.damping,
+          stiffness: defaultExpandConfig.stiffness,
+          mass: defaultExpandConfig.mass,
         });
       } else {
         topAnimation.value = withSpring(openHeight, {
-          damping: 300,
-          stiffness: 300,
+          damping: defaultExpandConfig.damping,
+          stiffness: defaultExpandConfig.stiffness,
+          mass: defaultExpandConfig.mass,
         });
       }
-    }, [openHeight, expandedHeight, expandToFull, snapToExpanded, topAnimation, opacity]);
+    }, [openHeight, expandedHeight, expandToFull, snapToExpanded, topAnimation, opacity, defaultExpandConfig]);
 
     const close = useCallback(() => {
       'worklet';
       runOnJS(Keyboard.dismiss)();
-      opacity.value = withTiming(0, { duration: 300 });
-      topAnimation.value = withTiming(closeHeight, { duration: 300 });
-    }, [closeHeight, topAnimation, opacity]);
+      opacity.value = withTiming(0, { duration: defaultCloseConfig.duration });
+      topAnimation.value = withTiming(closeHeight, { duration: defaultCloseConfig.duration });
+    }, [closeHeight, topAnimation, opacity, defaultCloseConfig]);
 
     useImperativeHandle(
       ref,
@@ -95,33 +113,36 @@ const BottomSheetScrollView = forwardRef<BottomSheetMethods, Props>(
     }));
 
     const pan = Gesture.Pan()
+      .enabled(enableDragToClose || enableDragToExpand)
       .onBegin(() => {
         context.value = topAnimation.value;
       })
       .onUpdate(event => {
-        if (event.translationY < 0) {
+        if (event.translationY < 0 && enableDragToExpand) {
           const resistanceFactor = 0.1;
           topAnimation.value = context.value + event.translationY * resistanceFactor;
-        } else {
+        } else if (event.translationY > 0 && enableDragToClose) {
           topAnimation.value = context.value + event.translationY;
         }
       })
       .onEnd(() => {
         const pulledDistance = topAnimation.value - context.value;
-        if (pulledDistance > CLOSE_THRESHOLD_PIXELS) {
-          opacity.value = withTiming(0, { duration: 300 });
-          topAnimation.value = withTiming(closeHeight, { duration: 300 });
-        } else if (snapToExpanded && topAnimation.value < context.value) {
+        if (enableDragToClose && pulledDistance > CLOSE_THRESHOLD_PIXELS) {
+          opacity.value = withTiming(0, { duration: defaultCloseConfig.duration });
+          topAnimation.value = withTiming(closeHeight, { duration: defaultCloseConfig.duration });
+        } else if (enableDragToExpand && snapToExpanded && topAnimation.value < context.value) {
           topAnimation.value = withSpring(expandedHeight, {
-            damping: 100,
-            stiffness: 400,
+            damping: defaultDragConfig.damping,
+            stiffness: defaultDragConfig.stiffness,
+            mass: defaultDragConfig.mass,
           });
           opacity.value = 1;
         } else {
           opacity.value = 1;
           topAnimation.value = withSpring(context.value, {
-            damping: 100,
-            stiffness: 400,
+            damping: defaultDragConfig.damping,
+            stiffness: defaultDragConfig.stiffness,
+            mass: defaultDragConfig.mass,
           });
         }
       });
@@ -129,38 +150,55 @@ const BottomSheetScrollView = forwardRef<BottomSheetMethods, Props>(
     useEffect(() => {
       if (expandToFull && snapToExpanded) {
         topAnimation.value = withSpring(expandedHeight, {
-          damping: 100,
-          stiffness: 400,
+          damping: defaultExpandConfig.damping,
+          stiffness: defaultExpandConfig.stiffness,
+          mass: defaultExpandConfig.mass,
         });
         opacity.value = 1;
       }
-    }, [expandToFull, snapToExpanded, expandedHeight, topAnimation, opacity]);
+    }, [expandToFull, snapToExpanded, expandedHeight, topAnimation, opacity, defaultExpandConfig]);
 
     return (
       <>
-        <BackDrop
-          topAnimation={topAnimation}
-          backDropColor={DropbackgroundColor}
-          closeHeight={closeHeight}
-          openHeight={openHeight}
-          close={close}
-        />
+        {enableBackdropClose && (
+          <BackDrop
+            topAnimation={topAnimation}
+            backDropColor={DropbackgroundColor}
+            closeHeight={closeHeight}
+            openHeight={openHeight}
+            close={tapBackdropToClose ? close : () => { }}
+          />
+        )}
         <Animated.View
           style={[
             styles.container,
             animationStyle,
-            { zIndex: zIndex ?? 100, paddingBottom: inset.bottom, overflow: "hidden", backgroundColor: backgroundColor },
+            {
+              zIndex: zIndex ?? 100,
+              paddingBottom: inset.bottom,
+              overflow: "hidden",
+              backgroundColor: backgroundColor,
+            },
             containerStyle,
           ]}
         >
-          <GestureDetector gesture={pan}>
-            <View
-              style={[styles.linecontainer, lineContainerStyle]}
-              collapsable={false}
-            >
-              <View style={[styles.line, lineStyle]} />
-            </View>
-          </GestureDetector>
+          {(enableDragToClose || enableDragToExpand) && (
+            <GestureDetector gesture={pan}>
+              <View
+                style={[styles.linecontainer, lineContainerStyle]}
+                collapsable={false}
+              >
+                {showDragLine && (
+                  <View
+                    style={[
+                      styles.line,
+                      lineStyle
+                    ]}
+                  />
+                )}
+              </View>
+            </GestureDetector>
+          )}
 
           <View style={{ flex: 1 }}>
             {content}
@@ -179,7 +217,9 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    shadowColor: '#fff',
+  },
+  shadow: {
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: -3 },
     shadowOpacity: 0.1,
     shadowRadius: 6,
@@ -189,11 +229,13 @@ const styles = StyleSheet.create({
     backgroundColor: "gray",
     width: 60,
     height: 4,
-    borderRadius: 50,
-    marginVertical: 5
+    borderRadius: 500,
   },
   linecontainer: {
     flexDirection: "row",
     justifyContent: "center",
+    position: "relative",
+    zIndex: 100,
+    paddingVertical: 10,
   }
 });

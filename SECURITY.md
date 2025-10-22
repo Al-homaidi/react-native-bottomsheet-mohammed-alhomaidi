@@ -1,99 +1,132 @@
 # Security Policy
 
-## Supported Versions
+## 🔒 Supported Versions
 
 We release patches for security vulnerabilities in the following versions:
 
 | Version | Supported          |
 | ------- | ------------------ |
+| 1.1.x   | :white_check_mark: |
 | 1.0.x   | :white_check_mark: |
 | < 1.0   | :x:                |
 
-## Reporting a Vulnerability
+## 🚨 Reporting a Vulnerability
 
-We take security bugs seriously. We appreciate your efforts to responsibly disclose your findings, and will make every effort to acknowledge your contributions.
+If you discover a security vulnerability in React Native BottomSheet, please follow these steps:
 
-### How to Report
+### 1. **DO NOT** create a public GitHub issue
+Security vulnerabilities should be reported privately to prevent exploitation.
 
-**Please do not report security vulnerabilities through public GitHub issues.**
+### 2. Email Security Report
+Send an email to: **alhomaidi505@gmail.com**
 
-Instead, please report them via email to:
-- **Email**: [alhomaidi505@gmail.com](mailto:alhomaidi505@gmail.com)
-- **Subject**: `[SECURITY] React Native BottomSheet Vulnerability Report`
+Include the following information:
+- **Description**: Clear description of the vulnerability
+- **Steps to Reproduce**: Detailed steps to reproduce the issue
+- **Impact**: Potential impact of the vulnerability
+- **Environment**: React Native version, platform, device details
+- **Proof of Concept**: Code examples or screenshots (if applicable)
 
-### What to Include
-
-Please include the following information in your report:
-
-1. **Description**: A clear description of the vulnerability
-2. **Steps to Reproduce**: Detailed steps to reproduce the issue
-3. **Impact**: Potential impact of the vulnerability
-4. **Environment**: React Native version, platform (iOS/Android), device info
-5. **Code Sample**: Minimal code that demonstrates the vulnerability
-6. **Suggested Fix**: If you have ideas on how to fix the issue
-
-### Response Timeline
-
+### 3. Response Timeline
 - **Initial Response**: Within 48 hours
 - **Status Update**: Within 7 days
-- **Resolution**: As quickly as possible, typically within 30 days
+- **Resolution**: Within 30 days (depending on complexity)
 
-### What to Expect
+### 4. What to Expect
+- We will acknowledge receipt of your report
+- We will investigate the vulnerability
+- We will provide regular updates on our progress
+- We will coordinate the release of a fix
+- We will credit you in our security advisories (if desired)
 
-1. **Confirmation**: We'll confirm receipt of your report within 48 hours
-2. **Investigation**: We'll investigate the issue and determine its severity
-3. **Fix Development**: We'll develop a fix for the vulnerability
-4. **Release**: We'll release a patch version with the fix
-5. **Credit**: We'll credit you in the security advisory (if desired)
+## 🛡️ Security Best Practices
 
-## Security Best Practices
+### For Developers Using This Library
 
-### For Users
+1. **Keep Dependencies Updated**
+   ```bash
+   npm audit
+   npm update
+   ```
 
-- **Keep Updated**: Always use the latest version of the library
-- **Review Code**: Review any custom implementations
-- **Test Thoroughly**: Test your implementation on both platforms
-- **Follow Guidelines**: Follow React Native security best practices
+2. **Validate Input**
+   - Always validate user input before passing to the component
+   - Sanitize any dynamic content
+
+3. **Secure Configuration**
+   - Use HTTPS in production
+   - Implement proper authentication/authorization
+   - Follow React Native security guidelines
+
+4. **Regular Security Audits**
+   - Run `npm audit` regularly
+   - Monitor for security advisories
+   - Keep React Native and dependencies updated
 
 ### For Contributors
 
-- **Code Review**: All code changes go through review
-- **Dependency Updates**: Keep dependencies up to date
-- **Security Testing**: Test for common vulnerabilities
-- **Documentation**: Document any security considerations
+1. **Code Review Process**
+   - All code changes require review
+   - Security-sensitive changes get extra scrutiny
+   - Follow secure coding practices
 
-## Common Security Considerations
+2. **Dependency Management**
+   - Regularly update dependencies
+   - Use `npm audit` to check for vulnerabilities
+   - Avoid dependencies with known security issues
 
-### Input Validation
-- Always validate user inputs
-- Sanitize data before processing
-- Use proper TypeScript types
+3. **Testing**
+   - Test for security vulnerabilities
+   - Include security tests in CI/CD
+   - Perform penetration testing for critical features
 
-### Memory Management
-- Avoid memory leaks in animations
-- Properly clean up event listeners
-- Use proper lifecycle management
+## 🔍 Security Considerations
 
-### Platform Security
-- Follow iOS and Android security guidelines
-- Use secure communication protocols
-- Implement proper error handling
+### Current Security Features
 
-## Security Updates
+- **Input Validation**: Component validates props and configuration
+- **Safe Area Handling**: Proper safe area implementation prevents UI issues
+- **Memory Management**: Proper cleanup of event listeners and animations
+- **Gesture Security**: Gesture handling is isolated and secure
 
-Security updates will be released as patch versions (e.g., 1.0.1, 1.0.2) and will be announced in:
+### Known Limitations
 
-- GitHub Releases
-- NPM package updates
-- Security advisories
+- **Content Security**: The component doesn't validate content passed to it
+- **Dynamic Content**: Users should validate any dynamic content themselves
+- **Third-party Dependencies**: Security depends on peer dependencies
 
-## Contact
+## 📋 Security Checklist
 
-For any security-related questions or concerns, please contact:
+Before using this component in production:
 
-- **Email**: [alhomaidi505@gmail.com](mailto:alhomaidi505@gmail.com)
-- **GitHub**: [@Al-homaidi](https://github.com/Al-homaidi)
+- [ ] **Dependencies**: All dependencies are up to date
+- [ ] **Input Validation**: All user inputs are validated
+- [ ] **Content Security**: Dynamic content is sanitized
+- [ ] **Authentication**: Proper authentication is implemented
+- [ ] **HTTPS**: Application uses HTTPS in production
+- [ ] **Error Handling**: Proper error handling prevents information leakage
+- [ ] **Logging**: Sensitive information is not logged
+- [ ] **Testing**: Security tests are included
+
+## 🚀 Security Updates
+
+We are committed to:
+- **Timely Updates**: Releasing security patches quickly
+- **Clear Communication**: Providing clear information about vulnerabilities
+- **Backward Compatibility**: Maintaining compatibility when possible
+- **Documentation**: Updating security documentation as needed
+
+## 📞 Contact
+
+For security-related questions or concerns:
+- **Email**: alhomaidi505@gmail.com
+- **Subject**: [SECURITY] Your Subject Here
+
+## 📄 License
+
+This security policy is part of the MIT License. By using this software, you agree to follow these security guidelines.
 
 ---
 
-**Thank you for helping keep our community safe! 🛡️**
+**Last Updated**: December 2024
+**Next Review**: March 2025
