@@ -11,7 +11,8 @@
     "CHANGELOG.md",
     "CONTRIBUTING.md",
     "CODE_OF_CONDUCT.md",
-    "SECURITY.md"
+    "SECURITY.md",
+    "assets"
   ],
   "keywords": [
     "react-native",
@@ -50,7 +51,8 @@
     "test": "echo \"No tests specified\" && exit 0",
     "lint": "echo \"No linting specified\" && exit 0",
     "clean": "rm -rf lib",
-    "prebuild": "npm run clean"
+    "prebuild": "npm run clean",
+    "type-check": "tsc --noEmit"
   },
   "peerDependencies": {
     "react": ">=16.8.0",

@@ -2,6 +2,8 @@
 
 A powerful, flexible, and modern React Native BottomSheet component with context-based API, smooth animations, and comprehensive gesture support.
 
+![BottomSheet Demo](./assets/bottomsheet-demo.gif)
+
 ## ✨ Features
 
 - 🎯 **Context-based API** - Easy to use with `useBottomSheet` hook
